@@ -1,0 +1,11 @@
+all: Demo.o Monitor.o Panel.o Case.o
+	g++ -o all Demo.o Monitor.o Panel.o Case.o
+
+Panel.o: Panel.cpp Panel.h
+	g++ -c Panel.cpp
+Case.o: Case.cpp Case.h 
+	g++ -c Case.cpp
+Monitor.o: Monitor.cpp Panel.cpp Case.cpp Panel.h Case.h
+	g++ -c Monitor.cpp Panel.cpp Case.cpp 
+Demo.o: Demo.cpp Panel.cpp Case.cpp Panel.h Case.h
+	g++ -c Monitor.cpp Panel.cpp Case.cpp 
