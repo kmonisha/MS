@@ -1,0 +1,134 @@
+
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+
+
+
+
+
+using std::setw;
+
+
+
+#include <iosfwd>
+
+using std::istream;
+using std::ostream;
+template <class T>
+class String {
+    T* s;
+    String (int);
+public:
+    String (const T* right);
+    operator const T * () const;
+    operator int () const;
+    String (const String& right);
+    ~String ();
+    friend int operator== (const String& left, const String& right);
+    friend String operator+ (const String& left, const String& right);
+    const String& operator= (const String& right);
+    const String& operator+= (const String& right);
+    T operator[](int index) const;
+    T& operator[](int index);
+    String operator() (int start, int length) const;
+    friend ostream& operator<< (ostream&, const String&);
+    friend istream& operator>> (istream&, String&);
+};
+
+//String <T> cs;
+//String <wT_t> ws; 
+
+
+
+template<class T>
+String<T>::String (int i)
+{
+    s = new T [i];
+}
+template<class T>
+String<T>::String (const T *right)
+{
+    s = new T [strlen (right) + 1];
+    strcpy (s, right);
+}
+template<class T>
+String<T>::operator int () const
+{
+    return strlen (s);
+}
+
+template<class T>
+String<T>::String (const String& right)
+{
+    s = new T [strlen (right.s) + 1];
+    strcpy (s, right.s);
+}
+ template<class T>
+String<T>::~String ()
+{
+    delete [] s;
+}
+template<class T>
+int operator== (const String<T> &left, const String<T> &right)
+{
+    return !strcmp (left.s, right.s);
+}
+template<class T>
+String<T> operator+ (const String<T>& left, const String<T>& right)
+{
+    String<T> temp (strlen (left.s) + strlen (right.s) +1);
+    strcpy (temp.s, left.s);
+    strcat (temp.s, right.s);
+    return temp;
+}
+template<class T>
+const String<T>& String<T>::operator= (const String<T>& right)
+{
+    if (this != &right)
+    {
+        delete [] s;
+        s = new T [strlen (right.s) + 1];
+        strcpy (s, right.s);
+    }
+    return *this;
+}
+template<class T>
+const String<T>& String<T>::operator+= (const String& right)
+{
+    return *this = *this + right;
+}
+template<class T>
+T String<T>::operator[](int index) const
+{
+    return s[index];
+}
+template<class T>
+T& String<T>::operator[](int index)
+{
+    return s[index];
+}
+template<class T>
+String<T> String<T>::operator() (int start, int length) const
+{
+    String temp (length +1);
+    strncpy (temp.s, s+start, length);
+    temp.s [length] = '\0';
+    return temp;
+}
+template<class T>
+ostream& operator<< (ostream& out, const String<T>& right)
+{
+    return out << right.s;
+}
+template<class T>
+istream& operator>> (istream& in, String<T>& right)
+{
+    enum { MAXINPUTBUF=256 };
+    T temp [MAXINPUTBUF];
+    in >> setw (MAXINPUTBUF) >> temp;
+    delete [] right.s;
+    right.s = new T [strlen (temp) +1];
+    strcpy (right.s, temp);
+    return in;
+}
